@@ -10,10 +10,10 @@ const CMD_PORT = 8889;
 const STAT_PORT = 8890;
 const HTTP_PORT = 8001;
 const VIDEO_PORT = 11111;
-//const TELLO_IP = '192.168.10.1';
-const TELLO_IP = '127.0.0.1';
-//const HOST_IP = '192.168.10.3';
-const HOST_IP = '127.0.0.1';
+const TELLO_IP = '192.168.10.1';
+//const TELLO_IP = '127.0.0.1';
+const HOST_IP = '192.168.10.2';
+//const HOST_IP = '127.0.0.1';
 const WILD_IP = '0.0.0.0';
 const CAPTURE_METHOD = "CV"; // CV or FFPLAY or None
 const HEARTBEAT_INTERVAL = 5000;
@@ -198,8 +198,8 @@ function startCvCap() {
 	cvCaptureTimeid = setTimeout(() => {
 		if (wCap == null && cvCaptureTimeid != 0) {
 			console.log("cv capture starting...");
-			//wCap = new cv.VideoCapture(`udp://${TELLO_IP}:${VIDEO_PORT}`);
-			wCap = new cv.VideoCapture(`./resources/video/neco06_720.mp4`);
+			wCap = new cv.VideoCapture(`udp://${TELLO_IP}:${VIDEO_PORT}?overrun_nonfatal=1&fifo_size=12800`);
+			//wCap = new cv.VideoCapture(`./resources/video/neco06_720.mp4`);
 			wCap.set(cv.CAP_PROP_FOURCC, cv.VideoWriter.fourcc("H264"));
 			console.log("cv capture started!");
 			connectingCapture = false;
@@ -209,7 +209,7 @@ function startCvCap() {
 					const frame = wCap.read();
 					if (!frame.empty) {
 						cv.imshow('capture', frame);
-						let k = cv.waitKey(100);
+						let k = cv.waitKey(10);
 						if (cvCaptureTimeid != 0) {
 							cvCaptureTimeid = setTimeout(loopf, 100);
 							return;
@@ -220,7 +220,7 @@ function startCvCap() {
 			}
 			cvCaptureTimeid = setTimeout(loopf, 100);
 		}
-	}, 5000);
+	}, 2000);
 }
 
 function stopCvCap() {
