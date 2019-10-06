@@ -19,5 +19,11 @@
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
+  },
+  "opencv4nodejs": {
+    "disableAutoBuild": 1,
+    "opencvIncludeDir": "/usr/local/include/opencv4",
+    "opencvLibDir": "/usr/local/lib",
+    "opencvBinDir": "/usr/local/bin"
   }
 }
