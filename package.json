@@ -10,9 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "opencv4nodejs": "^5.3.0",
     "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.8"
+    "@types/node": "^12.7.8",
+    "log4js": "^5.2.0",
+    "opencv4nodejs": "^5.3.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",

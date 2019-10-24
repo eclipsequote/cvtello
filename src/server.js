@@ -23,7 +23,7 @@ const blockCmd = ['emergency', 'rc']  // blockng instruction
 const notBlockCmd = ['reset_all']     // non-blocking instruction
 
 const sockCmd = dgram.createSocket('udp4');
-sockCmd.bind(localPort, HOST_IP);
+sockCmd.bind(localPort);
 const sockStat = dgram.createSocket('udp4');
 
 const FFPLAY_PATH = "./bin/ffmpeg-4.2-win64-static/bin/ffplay.exe"
@@ -70,7 +70,8 @@ function sendCmd(cmd) {
 	}
 
 	order.push(cmd);
-	!lock && carryCMD(); // cmd lock
+	//!lock && carryCMD(); // cmd lock
+	carryCMD();
 };
 
 
@@ -97,13 +98,13 @@ sockCmd.on('message', function (msg, info) {
 function listenState() {
 	let count = 0;
 	sockStat.on('message', (msg, info) => {
+		msg = msg.toString().trim();
+		let fieldList = msg.split(';');		
+		fieldList.forEach(function (field) { let [key, value] = field.split(':'); osdData[key] = value; })
 		if (++count % 100 == 0) {
-			console.log("stat received %d, bat = %d", count, osdData["bat"]);
+			console.log("stat received %d, json = %s", count, JSON.stringify(osdData));
 			console.log(`stat from ${info.address}, ${info.port}`);
 		}
-		msg = msg.toString().trim();
-		let fieldList = msg.split(';');
-		fieldList.forEach(function (field) { let [key, value] = field.split(':'); osdData[key] = value; })
 	});
 
 	sockStat.on('listening', () => { const address = sockStat.address(); console.log(`server listening ${address.address}:${address.port}`); });
@@ -119,7 +120,7 @@ sockCmd.send(msgCommand, 0, msgCommand.length, CMD_PORT, TELLO_IP, (err) => {
 		console.log('connection error', err);
 		sockCmd.close();
 	}
-	startHeartBeat();
+	//startHeartBeat();
 });
 
 console.log('---------------------------------------');
@@ -132,11 +133,8 @@ http.createServer(function (request, response) {
 	if (url_params.length < 2) return;
 	let command = url_params[1];
 	if (command == 'poll') {
-		let rst = '';
-		for (let k in osdData) {
-			rst += `${k} ${osdData[k]}\n`;
-		}
-		response.end(rst);
+		response.setHeader('Content-Type', 'application/json');
+		response.end(JSON.stringify(osdData));
 	} else if (command == 'takeoff') {
 		sendCmd('command');
 		sendCmd('takeoff');

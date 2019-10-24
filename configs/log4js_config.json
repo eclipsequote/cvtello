@@ -1,0 +1,58 @@
+{
+  "appenders": {
+    "console": {
+      "type": "console",
+      "layout": {
+        "type": "pattern",
+        "pattern": "%[[%d{hh:mm:ss.SSS}][%p] %c -%] %m"
+      }
+    },
+    "console_f": {
+      "type": "logLevelFilter",
+      "level": "all",
+      "appender": "console"
+    },
+    "file_tello": {
+      "type": "file",
+      "filename": "logs/tello.log"
+    },
+    "file_tello_f": {
+      "type": "logLevelFilter",
+      "level": "all",
+      "appender": "file_tello"
+    },
+    "file_server": {
+      "type": "file",
+      "filename": "logs/server.log"
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console_f"
+      ],
+      "level": "all"
+    },
+    "tello": {
+      "appenders": [
+        "console_f",
+        "file_tello"
+      ],
+      "level": "all"
+    },
+    "emulator": {
+      "appenders": [
+        "console_f",
+        "file_tello"
+      ],
+      "level": "all"
+    },
+    "server": {
+      "appenders": [
+        "console_f",
+        "file_server"
+      ],
+      "level": "all"
+    }
+  }
+}
